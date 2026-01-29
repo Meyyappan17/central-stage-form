@@ -11,6 +11,9 @@ import {
   TrendingUp,
   ChevronRight,
   RotateCcw,
+  CloudUpload,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,6 +27,19 @@ interface LeadResultCardProps {
 
 export function LeadResultCard({ lead, index }: LeadResultCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isPushingToSF, setIsPushingToSF] = useState(false);
+  const [isPushedToSF, setIsPushedToSF] = useState(false);
+
+  const handlePushToSalesforce = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isPushedToSF || isPushingToSF) return;
+    
+    setIsPushingToSF(true);
+    // Simulate API call to Salesforce
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsPushingToSF(false);
+    setIsPushedToSF(true);
+  };
 
   const getStatusColor = (status: LeadResult["salesforceStatus"]) => {
     switch (status) {
@@ -176,91 +192,91 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
             transform: "rotateY(180deg)",
           }}
         >
-          <div className="h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-emerald-500/30 shadow-xl shadow-emerald-500/10 overflow-hidden">
+          <div className="h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-emerald-500/30 shadow-xl shadow-emerald-500/10 overflow-hidden flex flex-col">
             {/* Back Header */}
-            <div className="p-5 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-b border-emerald-500/20">
+            <div className="p-3 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-b border-emerald-500/20">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg text-white">Contact Details</h3>
+                <h3 className="font-semibold text-base text-white">Contact Details</h3>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-slate-400 hover:text-white gap-1"
+                  className="text-slate-400 hover:text-white gap-1 h-7 text-xs"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsFlipped(false);
                   }}
                 >
-                  <RotateCcw className="h-4 w-4" />
+                  <RotateCcw className="h-3 w-3" />
                   Flip
                 </Button>
               </div>
-              <p className="text-emerald-400 text-sm">{lead.companyName}</p>
+              <p className="text-emerald-400 text-xs">{lead.companyName}</p>
             </div>
 
-            {/* Contact Info */}
-            <div className="p-5 space-y-4">
-              <div className="bg-slate-800/50 rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {lead.contact.name.split(" ").map((n) => n[0]).join("")}
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">{lead.contact.name}</p>
-                    <p className="text-slate-400 text-sm">{lead.contact.title}</p>
-                  </div>
+            {/* Minimal Contact Info */}
+            <div className="flex-1 p-4 flex flex-col">
+              {/* Contact Card */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                  {lead.contact.name.split(" ").map((n) => n[0]).join("")}
                 </div>
+                <div>
+                  <p className="text-white font-semibold text-sm">{lead.contact.name}</p>
+                  <p className="text-slate-400 text-xs">{lead.contact.title}</p>
+                </div>
+              </div>
 
-                <div className="space-y-3">
-                  <a
-                    href={`mailto:${lead.contact.email}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex items-center gap-3 text-sm text-slate-300 hover:text-emerald-400 transition-colors"
-                  >
+              <div className="space-y-2 flex-1">
+                <a
+                  href={`mailto:${lead.contact.email}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg text-slate-300 hover:text-emerald-400 hover:bg-slate-800 transition-all text-sm"
+                >
+                  <div className="w-8 h-8 bg-emerald-500/20 rounded-md flex items-center justify-center flex-shrink-0">
                     <Mail className="h-4 w-4 text-emerald-400" />
-                    <span className="truncate">{lead.contact.email}</span>
-                  </a>
-                  <a
-                    href={`tel:${lead.contact.phone}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex items-center gap-3 text-sm text-slate-300 hover:text-emerald-400 transition-colors"
-                  >
+                  </div>
+                  <span className="truncate text-xs">{lead.contact.email}</span>
+                </a>
+                <a
+                  href={`tel:${lead.contact.phone}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition-all text-sm"
+                >
+                  <div className="w-8 h-8 bg-cyan-500/20 rounded-md flex items-center justify-center flex-shrink-0">
                     <Phone className="h-4 w-4 text-cyan-400" />
-                    <span>{lead.contact.phone}</span>
-                  </a>
-                  {lead.contact.linkedIn && (
-                    <a
-                      href={`https://${lead.contact.linkedIn}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-3 text-sm text-slate-300 hover:text-emerald-400 transition-colors"
-                    >
-                      <Linkedin className="h-4 w-4 text-blue-400" />
-                      <span className="truncate">LinkedIn Profile</span>
-                    </a>
-                  )}
-                </div>
+                  </div>
+                  <span className="text-xs">{lead.contact.phone}</span>
+                </a>
               </div>
 
-              {/* Company Website */}
-              <a
-                href={`https://${lead.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg text-sm text-slate-300 hover:text-emerald-400 transition-colors"
+              {/* Push to Salesforce Button */}
+              <Button
+                onClick={handlePushToSalesforce}
+                disabled={isPushingToSF || isPushedToSF}
+                className={cn(
+                  "w-full font-medium transition-all duration-300 mt-3 h-10",
+                  isPushedToSF
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
+                    : "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg shadow-blue-500/25"
+                )}
               >
-                <Globe className="h-4 w-4 text-emerald-400" />
-                <span>{lead.website}</span>
-              </a>
-
-              {/* Description */}
-              <div className="pt-3 border-t border-slate-700">
-                <p className="text-xs text-slate-500 mb-2">About</p>
-                <p className="text-slate-400 text-sm leading-relaxed line-clamp-4">
-                  {lead.description}
-                </p>
-              </div>
+                {isPushingToSF ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <span className="text-sm">Pushing...</span>
+                  </>
+                ) : isPushedToSF ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Added to Salesforce</span>
+                  </>
+                ) : (
+                  <>
+                    <CloudUpload className="h-4 w-4 mr-2" />
+                    <span className="text-sm">Push to Salesforce</span>
+                  </>
+                )}
+              </Button>
             </div>
           </div>
         </div>
