@@ -125,10 +125,10 @@
   backface-visibility: hidden;
 }
 
-.rotate-y-6:hover {
-  transform: rotateY(6deg);
-}
-
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+.rotate-y-6:hover {
+  transform: rotateY(6deg);
 }
