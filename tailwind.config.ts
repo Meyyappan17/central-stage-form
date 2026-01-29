@@ -99,6 +99,16 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
+        "rotate-y-6": {
+          from: { transform: "rotateY(0deg)" },
+          to: { transform: "rotateY(6deg)" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.4s ease-out",
+        "scale-in": "scale-in 0.3s ease-out",
       },
     },
   },
