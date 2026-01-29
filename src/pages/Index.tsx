@@ -7,12 +7,12 @@ const Index = () => {
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="text-center mb-10 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Get help with any project
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Describe what you need and we'll connect you with trusted local professionals.
-          </p>
+        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          What service do you need?
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          Tell us about your project and get matched with top-rated pros in your area.
+        </p>
         </div>
 
         <ServiceRequestForm />
