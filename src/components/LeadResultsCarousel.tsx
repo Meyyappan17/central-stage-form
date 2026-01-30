@@ -55,10 +55,10 @@ export function LeadResultsCarousel({ leads, isVisible }: LeadResultsCarouselPro
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-foreground">
             Found {leads.length} Matching Leads
           </h2>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-muted-foreground text-sm mt-1">
             Click on a card to flip and see contact details
           </p>
         </div>
@@ -68,7 +68,7 @@ export function LeadResultsCarousel({ leads, isVisible }: LeadResultsCarouselPro
             size="icon"
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className="h-9 w-9 rounded-full border-slate-600 bg-slate-800 text-slate-400 hover:text-white hover:border-emerald-500 disabled:opacity-30"
+            className="h-9 w-9 rounded-full border-border bg-card text-muted-foreground hover:text-foreground hover:border-emerald-500 disabled:opacity-30"
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -77,7 +77,7 @@ export function LeadResultsCarousel({ leads, isVisible }: LeadResultsCarouselPro
             size="icon"
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className="h-9 w-9 rounded-full border-slate-600 bg-slate-800 text-slate-400 hover:text-white hover:border-emerald-500 disabled:opacity-30"
+            className="h-9 w-9 rounded-full border-border bg-card text-muted-foreground hover:text-foreground hover:border-emerald-500 disabled:opacity-30"
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
@@ -89,13 +89,13 @@ export function LeadResultsCarousel({ leads, isVisible }: LeadResultsCarouselPro
         {/* Gradient Overlays */}
         <div
           className={cn(
-            "absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none transition-opacity duration-300",
+            "absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none transition-opacity duration-300",
             canScrollLeft ? "opacity-100" : "opacity-0"
           )}
         />
         <div
           className={cn(
-            "absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none transition-opacity duration-300",
+            "absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none transition-opacity duration-300",
             canScrollRight ? "opacity-100" : "opacity-0"
           )}
         />
@@ -138,7 +138,7 @@ export function LeadResultsCarousel({ leads, isVisible }: LeadResultsCarouselPro
             }}
             className={cn(
               "w-2 h-2 rounded-full transition-all duration-300",
-              "bg-slate-600 hover:bg-emerald-400"
+              "bg-muted-foreground/30 hover:bg-emerald-400"
             )}
           />
         ))}

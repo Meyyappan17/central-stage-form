@@ -68,10 +68,10 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "text-emerald-400";
-    if (score >= 80) return "text-cyan-400";
-    if (score >= 70) return "text-amber-400";
-    return "text-slate-400";
+    if (score >= 90) return "text-emerald-500 dark:text-emerald-400";
+    if (score >= 80) return "text-cyan-500 dark:text-cyan-400";
+    if (score >= 70) return "text-amber-500 dark:text-amber-400";
+    return "text-muted-foreground";
   };
 
   return (
@@ -95,9 +95,9 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
           className="absolute inset-0 w-full h-full backface-hidden"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <div className="h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 shadow-xl shadow-black/20 overflow-hidden group hover:border-emerald-500/30 transition-all duration-300">
+          <div className="h-full bg-gradient-to-br from-card to-secondary rounded-2xl border border-border shadow-xl shadow-black/10 dark:shadow-black/20 overflow-hidden group hover:border-emerald-500/30 transition-all duration-300">
             {/* Card Header with Score */}
-            <div className="relative p-5 bg-gradient-to-r from-slate-800 to-slate-700 border-b border-slate-600">
+            <div className="relative p-5 bg-gradient-to-r from-secondary to-muted border-b border-border">
               <div className="absolute top-4 right-4 flex items-center gap-2">
                 <Badge className={cn("border", getStatusColor(lead.salesforceStatus))}>
                   {getStatusLabel(lead.salesforceStatus)}
@@ -120,11 +120,11 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                   </div>
                 </div>
                 <div className="flex-1 min-w-0 pr-20">
-                  <h3 className="font-semibold text-lg text-white truncate group-hover:text-emerald-300 transition-colors">
+                  <h3 className="font-semibold text-lg text-foreground truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors">
                     {lead.companyName}
                   </h3>
-                  <div className="flex items-center gap-1 text-slate-400 text-sm">
-                    <MapPin className="h-3.5 w-3.5 text-emerald-400" />
+                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                    <MapPin className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
                     <span className="truncate">{lead.location}</span>
                   </div>
                 </div>
@@ -135,46 +135,46 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
             <div className="p-5 space-y-4">
               {/* Quick Stats */}
               <div className="grid grid-cols-3 gap-3">
-                <div className="bg-slate-800/50 rounded-lg p-3 text-center">
-                  <Users className="h-4 w-4 mx-auto mb-1 text-cyan-400" />
-                  <p className="text-white font-semibold text-sm">{lead.employeeCount}</p>
-                  <p className="text-slate-500 text-xs">Employees</p>
+                <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                  <Users className="h-4 w-4 mx-auto mb-1 text-cyan-500 dark:text-cyan-400" />
+                  <p className="text-foreground font-semibold text-sm">{lead.employeeCount}</p>
+                  <p className="text-muted-foreground text-xs">Employees</p>
                 </div>
-                <div className="bg-slate-800/50 rounded-lg p-3 text-center">
-                  <DollarSign className="h-4 w-4 mx-auto mb-1 text-emerald-400" />
-                  <p className="text-white font-semibold text-sm">{lead.revenue}</p>
-                  <p className="text-slate-500 text-xs">Revenue</p>
+                <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                  <DollarSign className="h-4 w-4 mx-auto mb-1 text-emerald-500 dark:text-emerald-400" />
+                  <p className="text-foreground font-semibold text-sm">{lead.revenue}</p>
+                  <p className="text-muted-foreground text-xs">Revenue</p>
                 </div>
-                <div className="bg-slate-800/50 rounded-lg p-3 text-center">
-                  <TrendingUp className="h-4 w-4 mx-auto mb-1 text-amber-400" />
+                <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                  <TrendingUp className="h-4 w-4 mx-auto mb-1 text-amber-500 dark:text-amber-400" />
                   <p className={cn("font-semibold text-sm", getScoreColor(lead.matchScore))}>
                     {lead.matchScore}%
                   </p>
-                  <p className="text-slate-500 text-xs">Match</p>
+                  <p className="text-muted-foreground text-xs">Match</p>
                 </div>
               </div>
 
               {/* Industry & Location */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Building2 className="h-4 w-4 text-slate-500" />
-                  <span className="text-slate-400">{lead.industry}</span>
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">{lead.industry}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-slate-500" />
-                  <span className="text-slate-400 truncate">{lead.address}</span>
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground truncate">{lead.address}</span>
                 </div>
               </div>
 
               {/* Contact Preview */}
-              <div className="pt-3 border-t border-slate-700">
-                <p className="text-xs text-slate-500 mb-2">Primary Contact</p>
+              <div className="pt-3 border-t border-border">
+                <p className="text-xs text-muted-foreground mb-2">Primary Contact</p>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white font-medium text-sm">{lead.contact.name}</p>
-                    <p className="text-slate-400 text-xs">{lead.contact.title}</p>
+                    <p className="text-foreground font-medium text-sm">{lead.contact.name}</p>
+                    <p className="text-muted-foreground text-xs">{lead.contact.title}</p>
                   </div>
-                  <div className="flex items-center gap-1 text-emerald-400 text-xs font-medium">
+                  <div className="flex items-center gap-1 text-emerald-500 dark:text-emerald-400 text-xs font-medium">
                     <span>View Details</span>
                     <ChevronRight className="h-3 w-3" />
                   </div>
@@ -192,15 +192,15 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
             transform: "rotateY(180deg)",
           }}
         >
-          <div className="h-full bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-emerald-500/30 shadow-xl shadow-emerald-500/10 overflow-hidden flex flex-col">
+          <div className="h-full bg-gradient-to-br from-card to-secondary rounded-2xl border border-emerald-500/30 shadow-xl shadow-emerald-500/10 overflow-hidden flex flex-col">
             {/* Back Header */}
             <div className="p-3 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-b border-emerald-500/20">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-base text-white">Contact Details</h3>
+                <h3 className="font-semibold text-base text-foreground">Contact Details</h3>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-slate-400 hover:text-white gap-1 h-7 text-xs"
+                  className="text-muted-foreground hover:text-foreground gap-1 h-7 text-xs"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsFlipped(false);
@@ -210,7 +210,7 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                   Flip
                 </Button>
               </div>
-              <p className="text-emerald-400 text-xs">{lead.companyName}</p>
+              <p className="text-emerald-500 dark:text-emerald-400 text-xs">{lead.companyName}</p>
             </div>
 
             {/* Minimal Contact Info */}
@@ -221,8 +221,8 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                   {lead.contact.name.split(" ").map((n) => n[0]).join("")}
                 </div>
                 <div>
-                  <p className="text-white font-semibold text-sm">{lead.contact.name}</p>
-                  <p className="text-slate-400 text-xs">{lead.contact.title}</p>
+                  <p className="text-foreground font-semibold text-sm">{lead.contact.name}</p>
+                  <p className="text-muted-foreground text-xs">{lead.contact.title}</p>
                 </div>
               </div>
 
@@ -230,20 +230,20 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                 <a
                   href={`mailto:${lead.contact.email}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg text-slate-300 hover:text-emerald-400 hover:bg-slate-800 transition-all text-sm"
+                  className="flex items-center gap-3 p-2.5 bg-secondary/50 rounded-lg text-foreground/80 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-secondary transition-all text-sm"
                 >
                   <div className="w-8 h-8 bg-emerald-500/20 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Mail className="h-4 w-4 text-emerald-400" />
+                    <Mail className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
                   </div>
                   <span className="truncate text-xs">{lead.contact.email}</span>
                 </a>
                 <a
                   href={`tel:${lead.contact.phone}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-3 p-2.5 bg-slate-800/50 rounded-lg text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition-all text-sm"
+                  className="flex items-center gap-3 p-2.5 bg-secondary/50 rounded-lg text-foreground/80 hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-secondary transition-all text-sm"
                 >
                   <div className="w-8 h-8 bg-cyan-500/20 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Phone className="h-4 w-4 text-cyan-400" />
+                    <Phone className="h-4 w-4 text-cyan-500 dark:text-cyan-400" />
                   </div>
                   <span className="text-xs">{lead.contact.phone}</span>
                 </a>

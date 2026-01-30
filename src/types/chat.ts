@@ -1,3 +1,5 @@
+import type { LeadData, KeyContact, IntentSignals, MatchingCompany } from '@/services/api';
+
 export interface LeadContact {
   name: string;
   title: string;
@@ -5,6 +7,9 @@ export interface LeadContact {
   phone: string;
   linkedIn?: string;
 }
+
+// Re-export API types for convenience
+export type { LeadData, KeyContact, IntentSignals, MatchingCompany };
 
 export interface LeadResult {
   id: string;
@@ -27,6 +32,7 @@ export interface ChatMessage {
   content: string;
   timestamp: Date;
   results?: LeadResult[];
+  leadData?: LeadData[]; // New field for API response data
 }
 
 export interface ChatSession {
@@ -37,6 +43,8 @@ export interface ChatSession {
   messages: ChatMessage[];
   query?: string;
   results?: LeadResult[];
+  leadData?: LeadData[]; // New field for API response data
+  sessionId?: string; // Backend session ID for chat agent
 }
 
 export interface FrequentPrompt {
