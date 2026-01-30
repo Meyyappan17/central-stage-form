@@ -24,6 +24,15 @@ export interface LeadResult {
   contact: LeadContact;
   salesforceStatus: "new" | "existing" | "qualified";
   matchScore: number;
+  // Extended fields from API
+  confidence?: 'high' | 'medium' | 'low';
+  fitScore?: number;
+  intentScore?: number;
+  overallScore?: number;
+  intentSignals?: IntentSignals;
+  sources?: string[];
+  otherContacts?: LeadContact[];
+  matchingDMGCustomers?: string[];
 }
 
 export interface ChatMessage {

@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 // Convert API LeadData to UI LeadResult format
 function convertLeadDataToResult(lead: LeadData): LeadResult {
   const primaryContact = lead.enrichment?.keyContacts?.[0];
+  const otherContacts = lead.enrichment?.keyContacts?.slice(1) || [];
   
   return {
     id: lead.id,
@@ -41,6 +42,21 @@ function convertLeadDataToResult(lead: LeadData): LeadResult {
     salesforceStatus: lead.salesforceStatus === "NEW" ? "new" : 
                       lead.salesforceStatus === "EXISTS_ASSIGNED" ? "qualified" : "existing",
     matchScore: lead.overallScore || lead.fitScore || 70,
+    // Extended fields
+    confidence: lead.confidence,
+    fitScore: lead.fitScore,
+    intentScore: lead.intentScore,
+    overallScore: lead.overallScore,
+    intentSignals: lead.intentSignals,
+    sources: lead.sources,
+    otherContacts: otherContacts.map(c => ({
+      name: c.name,
+      title: c.title,
+      email: c.email || "",
+      phone: c.phone || "",
+      linkedIn: c.linkedin,
+    })),
+    matchingDMGCustomers: lead.matchingActiveCompaniesInDMG?.map(c => c.name) || [],
   };
 }
 

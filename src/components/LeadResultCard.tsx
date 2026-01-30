@@ -10,13 +10,19 @@ import {
   DollarSign,
   TrendingUp,
   ChevronRight,
-  RotateCcw,
-  CloudUpload,
-  Loader2,
+  ExternalLink,
   CheckCircle2,
+  XCircle,
+  Activity,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { LeadResult } from "@/types/chat";
 
@@ -26,20 +32,7 @@ interface LeadResultCardProps {
 }
 
 export function LeadResultCard({ lead, index }: LeadResultCardProps) {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isPushingToSF, setIsPushingToSF] = useState(false);
-  const [isPushedToSF, setIsPushedToSF] = useState(false);
-
-  const handlePushToSalesforce = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isPushedToSF || isPushingToSF) return;
-    
-    setIsPushingToSF(true);
-    // Simulate API call to Salesforce
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsPushingToSF(false);
-    setIsPushedToSF(true);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getStatusColor = (status: LeadResult["salesforceStatus"]) => {
     switch (status) {
@@ -75,212 +68,413 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
   };
 
   return (
-    <div
-      className="relative h-[380px] w-full perspective-1000"
-      style={{ perspective: "1000px" }}
-    >
+    <>
+      {/* Lead Card - Click to open modal */}
       <div
-        className={cn(
-          "relative w-full h-full transition-all duration-700 transform-style-preserve-3d cursor-pointer",
-          isFlipped && "rotate-y-180"
-        )}
-        style={{
-          transformStyle: "preserve-3d",
-          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
-        }}
-        onClick={() => setIsFlipped(!isFlipped)}
+        className="relative h-[380px] w-full cursor-pointer"
+        onClick={() => setIsModalOpen(true)}
       >
-        {/* Front of Card */}
-        <div
-          className="absolute inset-0 w-full h-full backface-hidden"
-          style={{ backfaceVisibility: "hidden" }}
-        >
-          <div className="h-full bg-gradient-to-br from-card to-secondary rounded-2xl border border-border shadow-xl shadow-black/10 dark:shadow-black/20 overflow-hidden group hover:border-emerald-500/30 transition-all duration-300">
-            {/* Card Header with Score */}
-            <div className="relative p-5 bg-gradient-to-r from-secondary to-muted border-b border-border">
-              <div className="absolute top-4 right-4 flex items-center gap-2">
-                <Badge className={cn("border", getStatusColor(lead.salesforceStatus))}>
-                  {getStatusLabel(lead.salesforceStatus)}
-                </Badge>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                    {lead.companyName.charAt(0)}
-                  </div>
-                  <div
-                    className={cn(
-                      "absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-slate-900 border-2",
-                      getScoreColor(lead.matchScore)
-                    )}
-                    style={{ borderColor: "currentColor" }}
-                  >
-                    {lead.matchScore}
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0 pr-20">
-                  <h3 className="font-semibold text-lg text-foreground truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors">
-                    {lead.companyName}
-                  </h3>
-                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                    <MapPin className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
-                    <span className="truncate">{lead.location}</span>
-                  </div>
-                </div>
-              </div>
+        <div className="h-full bg-gradient-to-br from-card to-secondary rounded-2xl border border-border shadow-xl shadow-black/10 dark:shadow-black/20 overflow-hidden group hover:border-emerald-500/30 hover:shadow-emerald-500/10 transition-all duration-300">
+          {/* Card Header with Score */}
+          <div className="relative p-5 bg-gradient-to-r from-secondary to-muted border-b border-border">
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+              <Badge className={cn("border", getStatusColor(lead.salesforceStatus))}>
+                {getStatusLabel(lead.salesforceStatus)}
+              </Badge>
             </div>
 
-            {/* Card Body */}
-            <div className="p-5 space-y-4">
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-secondary/50 rounded-lg p-3 text-center">
-                  <Users className="h-4 w-4 mx-auto mb-1 text-cyan-500 dark:text-cyan-400" />
-                  <p className="text-foreground font-semibold text-sm">{lead.employeeCount}</p>
-                  <p className="text-muted-foreground text-xs">Employees</p>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                  {lead.companyName.charAt(0)}
                 </div>
-                <div className="bg-secondary/50 rounded-lg p-3 text-center">
-                  <DollarSign className="h-4 w-4 mx-auto mb-1 text-emerald-500 dark:text-emerald-400" />
-                  <p className="text-foreground font-semibold text-sm">{lead.revenue}</p>
-                  <p className="text-muted-foreground text-xs">Revenue</p>
-                </div>
-                <div className="bg-secondary/50 rounded-lg p-3 text-center">
-                  <TrendingUp className="h-4 w-4 mx-auto mb-1 text-amber-500 dark:text-amber-400" />
-                  <p className={cn("font-semibold text-sm", getScoreColor(lead.matchScore))}>
-                    {lead.matchScore}%
-                  </p>
-                  <p className="text-muted-foreground text-xs">Match</p>
+                <div
+                  className={cn(
+                    "absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-background border-2",
+                    getScoreColor(lead.matchScore)
+                  )}
+                  style={{ borderColor: "currentColor" }}
+                >
+                  {lead.matchScore}
                 </div>
               </div>
-
-              {/* Industry & Location */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">{lead.industry}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground truncate">{lead.address}</span>
-                </div>
-              </div>
-
-              {/* Contact Preview */}
-              <div className="pt-3 border-t border-border">
-                <p className="text-xs text-muted-foreground mb-2">Primary Contact</p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-foreground font-medium text-sm">{lead.contact.name}</p>
-                    <p className="text-muted-foreground text-xs">{lead.contact.title}</p>
-                  </div>
-                  <div className="flex items-center gap-1 text-emerald-500 dark:text-emerald-400 text-xs font-medium">
-                    <span>View Details</span>
-                    <ChevronRight className="h-3 w-3" />
-                  </div>
+              <div className="flex-1 min-w-0 pr-20">
+                <h3 className="font-semibold text-lg text-foreground truncate group-hover:text-emerald-500 dark:group-hover:text-emerald-300 transition-colors">
+                  {lead.companyName}
+                </h3>
+                <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                  <MapPin className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
+                  <span className="truncate">{lead.location}</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Back of Card */}
-        <div
-          className="absolute inset-0 w-full h-full backface-hidden rotate-y-180"
-          style={{
-            backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-          }}
-        >
-          <div className="h-full bg-gradient-to-br from-card to-secondary rounded-2xl border border-emerald-500/30 shadow-xl shadow-emerald-500/10 overflow-hidden flex flex-col">
-            {/* Back Header */}
-            <div className="p-3 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-b border-emerald-500/20">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-base text-foreground">Contact Details</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-foreground gap-1 h-7 text-xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsFlipped(false);
-                  }}
-                >
-                  <RotateCcw className="h-3 w-3" />
-                  Flip
-                </Button>
+          {/* Card Body */}
+          <div className="p-5 space-y-4">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                <Building2 className="h-4 w-4 mx-auto mb-1 text-cyan-500 dark:text-cyan-400" />
+                <p className="text-foreground font-semibold text-sm">{lead.employeeCount.toLocaleString()}</p>
+                <p className="text-muted-foreground text-xs">Locations</p>
               </div>
-              <p className="text-emerald-500 dark:text-emerald-400 text-xs">{lead.companyName}</p>
+              <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                <DollarSign className="h-4 w-4 mx-auto mb-1 text-emerald-500 dark:text-emerald-400" />
+                <p className="text-foreground font-semibold text-sm">{lead.revenue}</p>
+                <p className="text-muted-foreground text-xs">Revenue</p>
+              </div>
+              <div className="bg-secondary/50 rounded-lg p-3 text-center">
+                <TrendingUp className="h-4 w-4 mx-auto mb-1 text-amber-500 dark:text-amber-400" />
+                <p className={cn("font-semibold text-sm", getScoreColor(lead.matchScore))}>
+                  {lead.matchScore}%
+                </p>
+                <p className="text-muted-foreground text-xs">Match</p>
+              </div>
             </div>
 
-            {/* Minimal Contact Info */}
-            <div className="flex-1 p-4 flex flex-col">
-              {/* Contact Card */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                  {lead.contact.name.split(" ").map((n) => n[0]).join("")}
-                </div>
+            {/* Industry & Location */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm">
+                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">{lead.industry}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground truncate">{lead.address}</span>
+              </div>
+            </div>
+
+            {/* Contact Preview */}
+            <div className="pt-3 border-t border-border">
+              <p className="text-xs text-muted-foreground mb-2">Primary Contact</p>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-foreground font-semibold text-sm">{lead.contact.name}</p>
+                  <p className="text-foreground font-medium text-sm">{lead.contact.name}</p>
                   <p className="text-muted-foreground text-xs">{lead.contact.title}</p>
                 </div>
+                <div className="flex items-center gap-1 text-emerald-500 dark:text-emerald-400 text-xs font-medium">
+                  <span>View Details</span>
+                  <ChevronRight className="h-3 w-3" />
+                </div>
               </div>
-
-              <div className="space-y-2 flex-1">
-                <a
-                  href={`mailto:${lead.contact.email}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-3 p-2.5 bg-secondary/50 rounded-lg text-foreground/80 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-secondary transition-all text-sm"
-                >
-                  <div className="w-8 h-8 bg-emerald-500/20 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Mail className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
-                  </div>
-                  <span className="truncate text-xs">{lead.contact.email}</span>
-                </a>
-                <a
-                  href={`tel:${lead.contact.phone}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-3 p-2.5 bg-secondary/50 rounded-lg text-foreground/80 hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-secondary transition-all text-sm"
-                >
-                  <div className="w-8 h-8 bg-cyan-500/20 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Phone className="h-4 w-4 text-cyan-500 dark:text-cyan-400" />
-                  </div>
-                  <span className="text-xs">{lead.contact.phone}</span>
-                </a>
-              </div>
-
-              {/* Push to Salesforce Button */}
-              <Button
-                onClick={handlePushToSalesforce}
-                disabled={isPushingToSF || isPushedToSF}
-                className={cn(
-                  "w-full font-medium transition-all duration-300 mt-3 h-10",
-                  isPushedToSF
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
-                    : "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg shadow-blue-500/25"
-                )}
-              >
-                {isPushingToSF ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    <span className="text-sm">Pushing...</span>
-                  </>
-                ) : isPushedToSF ? (
-                  <>
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    <span className="text-sm">Added to Salesforce</span>
-                  </>
-                ) : (
-                  <>
-                    <CloudUpload className="h-4 w-4 mr-2" />
-                    <span className="text-sm">Push to Salesforce</span>
-                  </>
-                )}
-              </Button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>      {/* Enlarged Modal Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[85vh] bg-gradient-to-br from-card to-secondary border-border text-foreground flex flex-col">
+          <DialogHeader className="flex-shrink-0 pb-4">
+            <div className="flex items-center justify-between mb-2">
+              <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-lg">
+                  {lead.companyName.charAt(0)}
+                </div>
+                <span className="truncate">{lead.companyName}</span>
+              </DialogTitle>
+              <Badge className={cn("border flex-shrink-0", getStatusColor(lead.salesforceStatus))}>
+                {getStatusLabel(lead.salesforceStatus)}
+              </Badge>
+            </div>
+            <DialogDescription className="text-muted-foreground text-sm">
+              {lead.industry} • {lead.location}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto space-y-5 pr-2"
+            style={{ 
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'hsl(var(--muted-foreground)) transparent'
+            }}
+          >
+            {/* Row 1: Company Description */}
+            <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+              <h4 className="text-foreground font-semibold mb-2 flex items-center gap-2 text-sm">
+                <Building2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+                Company Description
+              </h4>
+              <p className="text-muted-foreground text-sm leading-relaxed">{lead.description}</p>
+            </div>
+
+            {/* Row 2: Headquarters & Website */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <MapPin className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+                  <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Headquarters</h4>
+                </div>
+                <p className="text-foreground text-sm font-medium">{lead.location}</p>
+              </div>
+              {lead.website && lead.website !== "N/A" && (
+                <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Globe className="h-4 w-4 text-purple-500 dark:text-purple-400" />
+                    <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Website</h4>
+                  </div>
+                  <a
+                    href={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-purple-500 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 text-sm truncate block font-medium"
+                  >
+                    {lead.website}
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* Row 3: Industry | Estimated Locations | Confidence */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <Building2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+                  <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Industry</h4>
+                </div>
+                <p className="text-foreground text-sm font-medium">{lead.industry}</p>
+              </div>
+              <div className="bg-secondary/50 rounded-lg p-4 border border-border text-center">
+                <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">Locations</h4>
+                <p className="text-foreground font-bold text-xl">{lead.employeeCount.toLocaleString()}</p>
+              </div>
+              {lead.confidence && (
+                <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="h-4 w-4 text-cyan-500 dark:text-cyan-400" />
+                    <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Confidence</h4>
+                  </div>
+                  <p className="text-foreground text-sm font-medium capitalize">{lead.confidence}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Row 4: Fit Score | Intent Score | Overall Score */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-gradient-to-br from-secondary/50 to-secondary/30 rounded-lg p-4 border border-border text-center">
+                <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">Fit Score</h4>
+                <p className={cn("font-bold text-2xl", getScoreColor(lead.fitScore || 0))}>
+                  {lead.fitScore || 0}%
+                </p>
+              </div>
+              <div className="bg-gradient-to-br from-secondary/50 to-secondary/30 rounded-lg p-4 border border-border text-center">
+                <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">Intent Score</h4>
+                <p className={cn("font-bold text-2xl", getScoreColor(lead.intentScore || 0))}>
+                  {lead.intentScore || 0}%
+                </p>
+              </div>
+              <div className="bg-gradient-to-br from-secondary/50 to-secondary/30 rounded-lg p-4 border border-border text-center">
+                <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-2">Overall Score</h4>
+                <p className={cn("font-bold text-2xl", getScoreColor(lead.overallScore || 0))}>
+                  {lead.overallScore || 0}%
+                </p>
+              </div>
+            </div>
+
+            {/* Intent Signals */}
+            {lead.intentSignals && (
+              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-4 border border-blue-500/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <Activity className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+                  <h4 className="text-foreground font-semibold text-sm">Intent Signals</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    {lead.intentSignals.expansionNews ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
+                    )}
+                    <span className={cn("text-xs", lead.intentSignals.expansionNews ? "text-foreground" : "text-muted-foreground")}>
+                      Expansion News
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    {lead.intentSignals.hiringFacilityRoles ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
+                    )}
+                    <span className={cn("text-xs", lead.intentSignals.hiringFacilityRoles ? "text-foreground" : "text-muted-foreground")}>
+                      Hiring Facility Roles
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    {lead.intentSignals.recentFunding ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
+                    )}
+                    <span className={cn("text-xs", lead.intentSignals.recentFunding ? "text-foreground" : "text-muted-foreground")}>
+                      Recent Funding
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    {lead.intentSignals.leadershipChange ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
+                    )}
+                    <span className={cn("text-xs", lead.intentSignals.leadershipChange ? "text-foreground" : "text-muted-foreground")}>
+                      Leadership Change
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    {lead.intentSignals.competitorMentions ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
+                    )}
+                    <span className={cn("text-xs", lead.intentSignals.competitorMentions ? "text-foreground" : "text-muted-foreground")}>
+                      Competitor Mentions
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg">
+                    {lead.intentSignals.rfpActivity ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
+                    )}
+                    <span className={cn("text-xs", lead.intentSignals.rfpActivity ? "text-foreground" : "text-muted-foreground")}>
+                      RFP Activity
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Contact Information */}
+            <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-lg p-3 border border-emerald-500/20">
+              <h4 className="text-foreground font-semibold mb-3 text-sm">Primary Contact</h4>
+              
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0">
+                  {lead.contact.name.split(" ").map((n) => n[0]).join("")}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-foreground font-semibold text-sm truncate">{lead.contact.name}</p>
+                  <p className="text-muted-foreground text-xs truncate">{lead.contact.title}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <a
+                  href={`mailto:${lead.contact.email}`}
+                  className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg text-muted-foreground hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-secondary transition-all text-sm"
+                >
+                  <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+                  </div>
+                  <span className="truncate">{lead.contact.email}</span>
+                </a>
+                
+                <a
+                  href={`tel:${lead.contact.phone}`}
+                  className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg text-muted-foreground hover:text-cyan-500 dark:hover:text-cyan-400 hover:bg-secondary transition-all text-sm"
+                >
+                  <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone className="h-4 w-4 text-cyan-500 dark:text-cyan-400" />
+                  </div>
+                  <span className="truncate">{lead.contact.phone}</span>
+                </a>
+
+                {lead.contact.linkedIn && (
+                  <a
+                    href={lead.contact.linkedIn}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 bg-secondary/50 rounded-lg text-muted-foreground hover:text-blue-500 dark:hover:text-blue-400 hover:bg-secondary transition-all text-sm"
+                  >
+                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Linkedin className="h-4 w-4 text-blue-500 dark:text-blue-400" />
+                    </div>
+                    <span className="truncate">LinkedIn Profile</span>
+                    <ExternalLink className="h-3 w-3 ml-auto flex-shrink-0" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Other Contacts */}
+            {lead.otherContacts && lead.otherContacts.length > 0 && (
+              <div className="bg-secondary/50 rounded-lg p-3 border border-border">
+                <h4 className="text-foreground font-semibold mb-3 text-sm">Other Contacts</h4>
+                <div className="space-y-3">
+                  {lead.otherContacts.map((contact, idx) => (
+                    <div key={idx} className="flex items-center gap-3 p-2 bg-background/50 rounded-lg">
+                      <div className="w-10 h-10 bg-gradient-to-br from-muted to-secondary rounded-full flex items-center justify-center text-foreground font-bold text-xs shadow flex-shrink-0">
+                        {contact.name.split(" ").map((n) => n[0]).join("")}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-foreground font-medium text-sm truncate">{contact.name}</p>
+                        <p className="text-muted-foreground text-xs truncate">{contact.title}</p>
+                        <div className="flex items-center gap-3 mt-1">
+                          <a href={`mailto:${contact.email}`} className="text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 text-xs truncate">
+                            {contact.email}
+                          </a>
+                          <span className="text-muted-foreground/50">•</span>
+                          <a href={`tel:${contact.phone}`} className="text-cyan-500 dark:text-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-300 text-xs">
+                            {contact.phone}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sources */}
+            {lead.sources && lead.sources.length > 0 && (
+              <div className="bg-secondary/50 rounded-lg p-3 border border-border">
+                <h4 className="text-foreground font-semibold mb-2 text-sm flex items-center gap-2">
+                  <ExternalLink className="h-4 w-4 text-purple-500 dark:text-purple-400" />
+                  Sources
+                </h4>
+                <div className="space-y-2">
+                  {lead.sources.map((source, idx) => (
+                    <a
+                      key={idx}
+                      href={source}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-2 bg-background/50 rounded-lg text-purple-500 dark:text-purple-400 hover:text-purple-600 dark:hover:text-purple-300 hover:bg-background transition-all text-xs group"
+                    >
+                      <ExternalLink className="h-3 w-3 flex-shrink-0" />
+                      <span className="truncate flex-1">{source}</span>
+                      <ChevronRight className="h-3 w-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Matching DMG Customers */}
+            {lead.matchingDMGCustomers && lead.matchingDMGCustomers.length > 0 && (
+              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg p-4 border border-amber-500/20">
+                <div className="flex items-start gap-2 mb-3">
+                  <Building2 className="h-5 w-5 text-amber-500 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-foreground font-semibold text-sm">Existing DMG Customers</h4>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      These businesses in similar industry are already our valued customers
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {lead.matchingDMGCustomers.map((customer, idx) => (
+                    <Badge
+                      key={idx}
+                      className="bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/30 transition-colors"
+                    >
+                      {customer}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
