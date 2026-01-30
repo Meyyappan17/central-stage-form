@@ -1,13 +1,11 @@
 import { useState } from "react";
 import {
   MapPin,
-  Users,
   Globe,
   Mail,
   Phone,
   Linkedin,
   Building2,
-  DollarSign,
   TrendingUp,
   ChevronRight,
   ExternalLink,
@@ -88,23 +86,14 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                 <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
                   {lead.companyName.charAt(0)}
                 </div>
-                <div
-                  className={cn(
-                    "absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-background border-2",
-                    getScoreColor(lead.matchScore)
-                  )}
-                  style={{ borderColor: "currentColor" }}
-                >
-                  {lead.matchScore}
-                </div>
               </div>
               <div className="flex-1 min-w-0 pr-20">
                 <h3 className="font-semibold text-lg text-foreground truncate group-hover:text-emerald-500 dark:group-hover:text-emerald-300 transition-colors">
                   {lead.companyName}
                 </h3>
                 <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                  <MapPin className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
-                  <span className="truncate">{lead.location}</span>
+                  <Building2 className="h-3.5 w-3.5 text-emerald-500 dark:text-emerald-400" />
+                  <span className="truncate">{lead.industry}</span>
                 </div>
               </div>
             </div>
@@ -120,9 +109,9 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                 <p className="text-muted-foreground text-xs">Locations</p>
               </div>
               <div className="bg-secondary/50 rounded-lg p-3 text-center">
-                <DollarSign className="h-4 w-4 mx-auto mb-1 text-emerald-500 dark:text-emerald-400" />
-                <p className="text-foreground font-semibold text-sm">{lead.revenue}</p>
-                <p className="text-muted-foreground text-xs">Revenue</p>
+                <TrendingUp className="h-4 w-4 mx-auto mb-1 text-emerald-500 dark:text-emerald-400" />
+                <p className="text-foreground font-semibold text-sm capitalize">{lead.confidence || 'N/A'}</p>
+                <p className="text-muted-foreground text-xs">Confidence</p>
               </div>
               <div className="bg-secondary/50 rounded-lg p-3 text-center">
                 <TrendingUp className="h-4 w-4 mx-auto mb-1 text-amber-500 dark:text-amber-400" />
@@ -133,16 +122,10 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
               </div>
             </div>
 
-            {/* Industry & Location */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <Building2 className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">{lead.industry}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground truncate">{lead.address}</span>
-              </div>
+            {/* Company Address */}
+            <div className="flex items-center gap-2 text-sm">
+              <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <span className="text-muted-foreground truncate">{lead.address || lead.location}</span>
             </div>
 
             {/* Contact Preview */}
@@ -226,8 +209,8 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
 
             {/* Row 3: Industry | Estimated Locations | Confidence */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-secondary/50 rounded-lg p-4 border border-border">
-                <div className="flex items-center gap-2 mb-2">
+              <div className="bg-secondary/50 rounded-lg p-4 border border-border text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
                   <Building2 className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
                   <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Industry</h4>
                 </div>
@@ -238,8 +221,8 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                 <p className="text-foreground font-bold text-xl">{lead.employeeCount.toLocaleString()}</p>
               </div>
               {lead.confidence && (
-                <div className="bg-secondary/50 rounded-lg p-4 border border-border">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="bg-secondary/50 rounded-lg p-4 border border-border text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
                     <TrendingUp className="h-4 w-4 text-cyan-500 dark:text-cyan-400" />
                     <h4 className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">Confidence</h4>
                   </div>
@@ -269,6 +252,31 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                 </p>
               </div>
             </div>
+
+            {/* Matching DMG Customers - Moved above Intent Signals */}
+            {lead.matchingDMGCustomers && lead.matchingDMGCustomers.length > 0 && (
+              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg p-4 border border-amber-500/20">
+                <div className="flex items-start gap-2 mb-3">
+                  <Building2 className="h-5 w-5 text-amber-500 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-foreground font-semibold text-sm">Existing DMG Customers</h4>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      We are already serving these {lead.industry?.toUpperCase().replace(/\s+/g, '_') || 'industry'} customers
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {lead.matchingDMGCustomers.map((customer, idx) => (
+                    <Badge
+                      key={idx}
+                      className="bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/30 transition-colors"
+                    >
+                      {customer}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Intent Signals */}
             {lead.intentSignals && (
@@ -443,31 +451,6 @@ export function LeadResultCard({ lead, index }: LeadResultCardProps) {
                       <span className="truncate flex-1">{source}</span>
                       <ChevronRight className="h-3 w-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </a>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Matching DMG Customers */}
-            {lead.matchingDMGCustomers && lead.matchingDMGCustomers.length > 0 && (
-              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg p-4 border border-amber-500/20">
-                <div className="flex items-start gap-2 mb-3">
-                  <Building2 className="h-5 w-5 text-amber-500 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="text-foreground font-semibold text-sm">Existing DMG Customers</h4>
-                    <p className="text-muted-foreground text-xs mt-1">
-                      These businesses in similar industry are already our valued customers
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {lead.matchingDMGCustomers.map((customer, idx) => (
-                    <Badge
-                      key={idx}
-                      className="bg-amber-500/20 text-amber-600 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/30 transition-colors"
-                    >
-                      {customer}
-                    </Badge>
                   ))}
                 </div>
               </div>

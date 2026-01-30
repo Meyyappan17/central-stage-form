@@ -179,7 +179,7 @@ export const frequentPrompts: FrequentPrompt[] = [
 // Motivational quotes for the UI
 export const motivationalQuotes = [
   "Every lead is a story waiting to be discovered. What's yours today?",
-  "The best leads aren't found, they're uncovered. Let's dig in!",
+  "The best leads aren't found, they're discovered. Let's dig in!",
   "Your next big deal is just one search away. Ready to find it?",
   "Great relationships start with great leads. What are you building today?",
   "Turn prospects into partners. What industry shall we explore?",

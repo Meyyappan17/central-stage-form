@@ -58,9 +58,6 @@ export function LeadResultsCarousel({ leads, isVisible }: LeadResultsCarouselPro
           <h2 className="text-xl font-semibold text-foreground">
             Found {leads.length} Matching Leads
           </h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            Click on a card to flip and see contact details
-          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button

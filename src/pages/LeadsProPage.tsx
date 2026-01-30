@@ -472,11 +472,7 @@ export default function LeadsProPage() {
                     {quote}
                   </h2>
 
-                  {/* Subheading - Hint */}
-                  <p className="text-muted-foreground text-lg mb-2">
-                    Find facility management leads for your target industries
-                  </p>
-                  <p className="text-muted-foreground/70 text-sm max-w-xl mx-auto">
+                  <p className="text-muted-foreground/70 text-sm max-w-xl mx-auto mt-4">
                     {chatAgentEnabled ? (
                       <>
                         I'll help you discover leads. Just tell me what you're looking for and I'll ask a few clarifying questions.
