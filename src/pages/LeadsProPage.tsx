@@ -6,6 +6,7 @@ import { LeadResultsCarousel } from "@/components/LeadResultsCarousel";
 import { ActiveSearchBar } from "@/components/ActiveSearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ChatMessages } from "@/components/ChatMessages";
+import { LoadingMessages } from "@/components/LoadingMessages";
 import { ChatSession, LeadResult, ChatMessage, LeadData } from "@/types/chat";
 import { apiService, ChatResponse, LeadsRequest } from "@/services/api";
 import { config } from "@/config";
@@ -503,7 +504,7 @@ export default function LeadsProPage() {
             )}
 
             {/* Chat Interface - Show when in chat agent mode with messages */}
-            {showChatInterface && (
+            {showChatInterface && !isLoading && (
               <div className="flex flex-col h-full">
                 <ChatMessages messages={chatMessages} isLoading={isChatLoading} />
                 
@@ -518,22 +519,17 @@ export default function LeadsProPage() {
               </div>
             )}
 
-            {/* Loading State - Only for direct search mode or leads fetching */}
-            {isLoading && !chatAgentEnabled && (
-              <div className="text-center py-16 animate-in fade-in duration-300">
-                <div className="flex justify-center mb-6">
-                  <div className="relative">
-                    <div className="w-20 h-20 bg-gradient-to-br from-emerald-400/20 to-cyan-500/20 rounded-full flex items-center justify-center">
-                      <div className="w-10 h-10 border-3 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                    </div>
+            {/* Loading State - Show chat history + dynamic loading messages */}
+            {isLoading && (
+              <div className="flex flex-col">
+                {/* Show previous chat messages if any */}
+                {chatMessages.length > 0 && (
+                  <div className="mb-6">
+                    <ChatMessages messages={chatMessages} isLoading={false} />
                   </div>
-                </div>
-                <h2 className="text-xl font-semibold text-foreground mb-2">
-                  Discovering leads for you...
-                </h2>
-                <p className="text-muted-foreground">
-                  Searching across databases and verifying with Salesforce
-                </p>
+                )}
+                {/* Dynamic loading messages */}
+                <LoadingMessages isVisible={isLoading} />
               </div>
             )}
 
@@ -547,7 +543,7 @@ export default function LeadsProPage() {
         {/* Footer */}
         <footer className="flex-shrink-0 border-t border-border bg-card/30 px-6 py-3">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <p>Powered by AI Agent • ZoomInfo • Salesforce Integration</p>
+            <p>Powered by AI Agent • Apollo • Salesforce Integration</p>
             <p>Hackathon 2026</p>
           </div>
         </footer>
